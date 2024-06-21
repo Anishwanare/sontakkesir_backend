@@ -11,9 +11,25 @@ const schoolSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
+  schoolVillage: {
+    type: String,
+    required: true,
+    trim: true,
+    unique: true,
+  },
   location: {
     type: String,
     required: true,
+  },
+  talukka: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  district: {
+    type: String,
+    required: true,
+    trim: true,
   },
   year: {
     type: String,

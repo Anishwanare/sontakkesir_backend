@@ -11,9 +11,20 @@ export const schoolRegistration = async (req, res, next) => {
       year,
       schoolId,
       password,
+      schoolVillage,
+      talukka,
+      district,
     } = req.body;
 
-    if (!name || !location || !password || !schoolId) {
+    if (
+      !name ||
+      !location ||
+      !password ||
+      !schoolId ||
+      !schoolVillage ||
+      !talukka ||
+      !district
+    ) {
       return res.status(400).json({
         status: false,
         message: "Please fill all fields",
@@ -36,6 +47,9 @@ export const schoolRegistration = async (req, res, next) => {
       establishedYear,
       year,
       schoolId,
+      schoolVillage,
+      talukka,
+      district,
     });
 
     await newSchool.save();
