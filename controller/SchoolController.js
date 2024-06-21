@@ -1,21 +1,20 @@
 import { School } from "../Model/SchoolModel.js";
 
 export const schoolRegistration = async (req, res, next) => {
+  const {
+    name,
+    location,
+    students,
+    teachers,
+    establishedYear,
+    year,
+    schoolId,
+    password,
+    schoolVillage,
+    talukka,
+    district,
+  } = req.body;
   try {
-    const {
-      name,
-      location,
-      students,
-      teachers,
-      establishedYear,
-      year,
-      schoolId,
-      password,
-      schoolVillage,
-      talukka,
-      district,
-    } = req.body;
-
     if (
       !name ||
       !location ||
@@ -39,7 +38,7 @@ export const schoolRegistration = async (req, res, next) => {
       });
     }
 
-    const newSchool = new School({
+    const newSchool = await School.create({
       name,
       location,
       students,
@@ -51,8 +50,6 @@ export const schoolRegistration = async (req, res, next) => {
       talukka,
       district,
     });
-
-    await newSchool.save();
 
     return res.status(201).json({
       status: true,

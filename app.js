@@ -3,6 +3,7 @@ import { config } from "dotenv";
 import cors from "cors";
 import MessageRouter from "./Router/MessageRouter.js";
 import SchoolRouter from "./Router/SchoolRouter.js";
+import StudentRouter from "./Router/StudentRouter.js";
 import { dbConnection } from "./DataBase/dbConnection.js";
 
 export const app = express();
@@ -25,3 +26,4 @@ app.use(
 //
 app.use("/api/v1/message", MessageRouter);
 app.use("/api/v2/school", SchoolRouter);
+app.use("/api/v3/student",StudentRouter);
