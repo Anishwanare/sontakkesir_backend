@@ -31,6 +31,10 @@ const studentSchema = new mongoose.Schema(
           `${props.value} is not a valid Indian phone number!`,
       },
     },
+    school: {
+      type: String,
+      required: true,
+    },
     villageName: {
       type: String,
       required: true,

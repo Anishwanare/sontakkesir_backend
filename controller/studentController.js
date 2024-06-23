@@ -11,6 +11,7 @@ export const studentRegister = async (req, res, next) => {
     talukka,
     district,
     role,
+    school,
   } = req.body;
   try {
     if (
@@ -21,7 +22,8 @@ export const studentRegister = async (req, res, next) => {
       !phone ||
       !villageName ||
       !talukka ||
-      !district 
+      !district ||
+      !school
     ) {
       return res.status(400).json({
         status: false,
@@ -50,6 +52,7 @@ export const studentRegister = async (req, res, next) => {
       talukka,
       district,
       role: "Student",
+      school
     });
     return res.status(200).json({
       status: true,
