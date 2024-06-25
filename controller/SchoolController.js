@@ -82,3 +82,41 @@ export const getAllSchools = async (req, res, next) => {
     });
   }
 };
+
+export const deleteSchool = async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    if (!id) {
+      return res.status(404).json({
+        status: false,
+        message: "School ID not found",
+      });
+    }
+
+    let deleteSchool = await School.findById(id);
+
+    if (!deleteSchool) {
+      return res.status(200).json({
+        status: false,
+        message: "School not found",
+      });
+    }
+
+    deleteSchool.deleteOne();
+    return res.status(200).json({
+      status: true,
+      message: "School deleted successfully",
+    });
+  } catch (error) {
+    if (error.name === "validationError") {
+      const errorMessage = Object.values(err.errors)
+        .map((error) => error.message || "Internal Server Error")
+        .join(" ");
+      return res.status(400).json({ status: false, message: errorMessage });
+    }
+    return res
+      .status(400)
+      .json({ status: false, message: "internal server error"});
+  }
+};
