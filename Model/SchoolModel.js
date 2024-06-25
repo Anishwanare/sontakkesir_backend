@@ -10,12 +10,12 @@ const schoolSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true,
+    unique: true,
   },
   schoolVillage: {
     type: String,
     required: true,
     trim: true,
-    unique: true,
   },
   location: {
     type: String,
@@ -30,10 +30,6 @@ const schoolSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true,
-  },
-  year: {
-    type: String,
-    required: false,
   },
   password: {
     type: String,
