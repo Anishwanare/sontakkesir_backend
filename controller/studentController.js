@@ -33,7 +33,7 @@ export const studentRegister = async (req, res, next) => {
 
     //check if the student has already been registered
 
-    const existingStudent = await Student.findOne({phone});
+    const existingStudent = await Student.findOne({ phone });
     if (existingStudent) {
       return res.status(400).json({
         status: false,
@@ -52,12 +52,35 @@ export const studentRegister = async (req, res, next) => {
       talukka,
       district,
       role: "Student",
-      school
+      school,
     });
     return res.status(200).json({
       status: true,
       message: "Student registered successfully",
       newStudent,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: false,
+      message: "Something went wrong",
+      error: error.message,
+    });
+  }
+};
+
+export const getStudents = async (req, res) => {
+  const getStudent = await Student.find();
+  if (!getStudent) {
+    return res.status(400).json({
+      status: false,
+      message: "No student found",
+    });
+  }
+  try {
+    return res.status(200).json({
+      status: true,
+      message: "Student list fetched Successfully! ",
+      getStudent,
     });
   } catch (error) {
     return res.status(500).json({

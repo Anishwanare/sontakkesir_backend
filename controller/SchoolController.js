@@ -1,5 +1,6 @@
 import { School } from "../Model/SchoolModel.js";
 
+// School registration function
 export const schoolRegistration = async (req, res, next) => {
   const {
     name,
@@ -14,6 +15,7 @@ export const schoolRegistration = async (req, res, next) => {
     talukka,
     district,
   } = req.body;
+
   try {
     if (
       !name ||
@@ -46,6 +48,7 @@ export const schoolRegistration = async (req, res, next) => {
       establishedYear,
       year,
       schoolId,
+      password,
       schoolVillage,
       talukka,
       district,
@@ -65,6 +68,7 @@ export const schoolRegistration = async (req, res, next) => {
   }
 };
 
+// Get all schools function
 export const getAllSchools = async (req, res, next) => {
   try {
     const allSchools = await School.find();
@@ -83,6 +87,7 @@ export const getAllSchools = async (req, res, next) => {
   }
 };
 
+// Delete school function
 export const deleteSchool = async (req, res, next) => {
   const { id } = req.params;
 
@@ -94,29 +99,33 @@ export const deleteSchool = async (req, res, next) => {
       });
     }
 
-    let deleteSchool = await School.findById(id);
+    const deleteSchool = await School.findById(id);
 
     if (!deleteSchool) {
-      return res.status(200).json({
+      return res.status(404).json({
         status: false,
         message: "School not found",
       });
     }
 
-    deleteSchool.deleteOne();
+    await School.findByIdAndDelete(id);
     return res.status(200).json({
       status: true,
       message: "School deleted successfully",
     });
   } catch (error) {
-    if (error.name === "validationError") {
-      const errorMessage = Object.values(err.errors)
-        .map((error) => error.message || "Internal Server Error")
+    if (error.name === "ValidationError") {
+      const errorMessage = Object.values(error.errors)
+        .map((err) => err.message || "Internal Server Error")
         .join(" ");
       return res.status(400).json({ status: false, message: errorMessage });
     }
     return res
-      .status(400)
-      .json({ status: false, message: "internal server error"});
+      .status(500)
+      .json({
+        status: false,
+        message: "Internal server error",
+        error: error.message,
+      });
   }
 };
