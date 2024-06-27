@@ -36,6 +36,6 @@ const schoolSchema = new mongoose.Schema({
     required: false,
     trim: true,
   },
-});
+},{timestamps: true});
 
 export const School = mongoose.model("School", schoolSchema);
