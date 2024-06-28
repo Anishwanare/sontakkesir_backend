@@ -35,6 +35,10 @@ const studentSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    className: {
+      type: String,
+      required: true,
+    },
     villageName: {
       type: String,
       required: true,

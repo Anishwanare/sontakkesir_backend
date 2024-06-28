@@ -10,7 +10,7 @@ export const studentRegister = async (req, res, next) => {
     villageName,
     talukka,
     district,
-    role,
+    className,
     school,
   } = req.body;
   try {
@@ -19,6 +19,7 @@ export const studentRegister = async (req, res, next) => {
       !middleName ||
       !lastName ||
       !password ||
+      !className|| 
       !phone ||
       !villageName ||
       !talukka ||
@@ -51,6 +52,7 @@ export const studentRegister = async (req, res, next) => {
       villageName,
       talukka,
       district,
+      className,
       role: "Student",
       school,
     });
