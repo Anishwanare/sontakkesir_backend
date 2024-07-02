@@ -12,12 +12,14 @@ export const studentRegister = async (req, res, next) => {
     district,
     className,
     school,
+    coordinator,
   } = req.body;
   try {
     if (
       !firstName ||
       !middleName ||
       !lastName ||
+      !coordinator||
       !password ||
       !className|| 
       !phone ||
@@ -49,6 +51,7 @@ export const studentRegister = async (req, res, next) => {
       lastName,
       password,
       phone,
+      coordinator,
       villageName,
       talukka,
       district,
