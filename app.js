@@ -5,6 +5,7 @@ import MessageRouter from "./Router/MessageRouter.js";
 import SchoolRouter from "./Router/SchoolRouter.js";
 import StudentRouter from "./Router/StudentRouter.js";
 import CoordinatorRouter from "./Router/CoordinatorRouter.js";
+import AdminRouter from "./Router/AdminRouter.js";
 import { dbConnection } from "./DataBase/dbConnection.js";
 
 export const app = express();
@@ -29,3 +30,4 @@ app.use("/api/v1/message", MessageRouter);
 app.use("/api/v2/school", SchoolRouter);
 app.use("/api/v3/student", StudentRouter);
 app.use("/api/v4/coordinator", CoordinatorRouter); 
+app.use("/api/v5/admin", AdminRouter); 
