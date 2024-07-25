@@ -14,17 +14,18 @@ export const schoolRegistration = async (req, res, next) => {
     schoolVillage,
     talukka,
     district,
+    coordinator,
   } = req.body;
 
   try {
     if (
       !name ||
-      !location ||
       !password ||
       !schoolId ||
       !schoolVillage ||
       !talukka ||
-      !district
+      !district ||
+      !coordinator
     ) {
       return res.status(400).json({
         status: false,
@@ -42,16 +43,12 @@ export const schoolRegistration = async (req, res, next) => {
 
     const newSchool = await School.create({
       name,
-      location,
-      students,
-      teachers,
-      establishedYear,
-      year,
       schoolId,
       password,
       schoolVillage,
       talukka,
       district,
+      coordinator,
     });
 
     return res.status(201).json({
@@ -120,12 +117,10 @@ export const deleteSchool = async (req, res, next) => {
         .join(" ");
       return res.status(400).json({ status: false, message: errorMessage });
     }
-    return res
-      .status(500)
-      .json({
-        status: false,
-        message: "Internal server error",
-        error: error.message,
-      });
+    return res.status(500).json({
+      status: false,
+      message: "Internal server error",
+      error: error.message,
+    });
   }
 };

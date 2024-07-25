@@ -27,7 +27,7 @@ const coordinatorSchema = new mongoose.Schema({
   },
   school: {
     type: String,
-    required: [true, "School is required"],
+    required: [false, "School is not required"],
   },
   district: {
     type: String,

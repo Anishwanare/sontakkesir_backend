@@ -19,7 +19,7 @@ const schoolSchema = new mongoose.Schema({
   },
   location: {
     type: String,
-    required: true,
+    required: false,
   },
   talukka: {
     type: String,
@@ -27,6 +27,11 @@ const schoolSchema = new mongoose.Schema({
     trim: true,
   },
   district: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  coordinator:{
     type: String,
     required: true,
     trim: true,

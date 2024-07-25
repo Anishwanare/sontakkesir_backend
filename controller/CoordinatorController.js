@@ -18,7 +18,6 @@ export const coordinatorRegister = async (req, res) => {
       !lastName ||
       !email ||
       !phone ||
-      !school ||
       !district ||
       !talukka ||
       !password
