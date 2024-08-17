@@ -4,17 +4,14 @@ import { School } from "../Model/SchoolModel.js";
 export const schoolRegistration = async (req, res, next) => {
   const {
     name,
-    location,
-    students,
-    teachers,
-    establishedYear,
-    year,
     schoolId,
     password,
     schoolVillage,
     talukka,
     district,
     coordinator,
+    headMasterName,
+    headMasterMobile
   } = req.body;
 
   try {
@@ -25,7 +22,9 @@ export const schoolRegistration = async (req, res, next) => {
       !schoolVillage ||
       !talukka ||
       !district ||
-      !coordinator
+      !coordinator ||
+      !headMasterName ||
+      !headMasterMobile
     ) {
       return res.status(400).json({
         status: false,
@@ -49,6 +48,8 @@ export const schoolRegistration = async (req, res, next) => {
       talukka,
       district,
       coordinator,
+      headMasterName,
+      headMasterMobile
     });
 
     return res.status(201).json({

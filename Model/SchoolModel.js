@@ -6,6 +6,17 @@ const schoolSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
+  headMasterName: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  headMasterMobile: {
+    type: String,
+    required: true,
+    trim: true,
+    unique: true,
+  },
   schoolId: {
     type: String,
     required: true,
@@ -31,7 +42,7 @@ const schoolSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
-  coordinator:{
+  coordinator: {
     type: String,
     required: true,
     trim: true,
@@ -41,6 +52,6 @@ const schoolSchema = new mongoose.Schema({
     required: false,
     trim: true,
   },
-},{timestamps: true});
+}, { timestamps: true });
 
 export const School = mongoose.model("School", schoolSchema);
