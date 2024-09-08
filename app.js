@@ -18,7 +18,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: [process.env.FRONTEND_URL || "http://localhost:5173"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
     optionSuccessStatus: 200,
@@ -29,5 +29,5 @@ app.use(
 app.use("/api/v1/message", MessageRouter);
 app.use("/api/v2/school", SchoolRouter);
 app.use("/api/v3/student", StudentRouter);
-app.use("/api/v4/coordinator", CoordinatorRouter); 
+app.use("/api/v4/coordinator", CoordinatorRouter);
 app.use("/api/v5/admin", AdminRouter); 
