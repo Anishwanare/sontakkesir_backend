@@ -19,9 +19,9 @@ export const studentRegister = async (req, res, next) => {
       !firstName ||
       !middleName ||
       !lastName ||
-      !coordinator||
+      !coordinator ||
       !password ||
-      !className|| 
+      !className ||
       !phone ||
       !villageName ||
       !talukka ||
@@ -95,3 +95,81 @@ export const getStudents = async (req, res) => {
     });
   }
 };
+
+export const editStudentData = async (req, res, next) => {
+  const { id } = req.params
+  const { firstName, lastName, password, phone, coordinator, villageName, talukka, district, className, school } = req.body
+
+  try {
+    if (!id) {
+      return res.status(400).json({
+        status: false,
+        message: "No id provided"
+      })
+    }
+    const student = await Student.findById(id)
+    if (!student) {
+      return res.status(400).json({
+        status: false,
+        message: "No student found"
+      })
+    }
+    if (firstName) student.firstName = firstName
+    if (lastName) student.lastName = lastName
+    if (password) student.password = password
+    if (phone) student.phone = phone
+    if (coordinator) student.coordinator = coordinator
+    if (villageName) student.villageName = villageName
+    if (talukka) student.talukka = talukka
+    if (district) student.district = district
+    if (className) student.className = className
+    if (school) student.school = school
+
+    await student.save({ validateBeforeSave: true, runValidators: true, new: true })
+
+    res.status(200).json({
+      status: true,
+      message: "Student data updated successfully",
+      student
+    })
+  } catch (error) {
+    res.status(500).json({
+      status: false,
+      message: "Something went wrong",
+      error: error.message
+    })
+  }
+}
+
+export const deleteStudent = async (req, res, next) => {
+  const { id } = req.params
+  const deleteStudent = await Student.findByIdAndDelete(id)
+  if (!deleteStudent) {
+    return res.status(400).json({
+      status: false,
+      message: "No student found"
+    })
+  }
+  res.status(200).json({
+    status: true,
+    message: "Student deleted successfully",
+    deleteStudent
+  })
+}
+
+export const getStudentById = async(req,res,next)=>{
+  const {id} = req.params
+  const getStudent = await Student.findById(id)
+  if (!getStudent) {
+    return res.status(400).json({
+      status: false,
+      message: "No student found",
+      getStudent
+    })
+  }
+  res.status(200).json({
+    status: true,
+    message: "Student fetched successfully",
+    getStudent
+  })
+}

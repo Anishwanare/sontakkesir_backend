@@ -125,3 +125,92 @@ export const deleteSchool = async (req, res, next) => {
     });
   }
 };
+
+
+// Edit school function
+export const editSchool = async (req, res, next) => {
+  const { id } = req.params;
+  const {
+    name,
+    schoolId,
+    password,
+    schoolVillage,
+    talukka,
+    district,
+    coordinator,
+    headMasterName,
+    headMasterMobile,
+  } = req.body;
+
+  try {
+    if (!id) {
+      return res.status(404).json({
+        status: false,
+        message: "School ID not found",
+      });
+    }
+
+    // Check if the school exists
+    const existingSchool = await School.findById(id);
+    if (!existingSchool) {
+      return res.status(404).json({
+        status: false,
+        message: "School not found",
+      });
+    }
+
+    // Update school details
+    const updatedSchool = await School.findByIdAndUpdate(
+      id,
+      {
+        name,
+        schoolId,
+        password,
+        schoolVillage,
+        talukka,
+        district,
+        coordinator,
+        headMasterName,
+        headMasterMobile,
+      },
+      { new: true, runValidators: true }
+    );
+
+    return res.status(200).json({
+      status: true,
+      message: "School updated successfully",
+      school: updatedSchool,
+    });
+  } catch (error) {
+    if (error.name === "ValidationError") {
+      const errorMessage = Object.values(error.errors)
+        .map((err) => err.message || "Validation Error")
+        .join(" ");
+      return res.status(400).json({ status: false, message: errorMessage });
+    }
+    return res.status(500).json({
+      status: false,
+      message: "Failed to update school",
+      error: error.message,
+    });
+  }
+};
+
+
+export const getSchoolById = async(req,res,next)=>{
+  const {id} = req.params
+  const getSchool = await School.findById(id)
+  if (!getSchool) {
+    return res.status(400).json({
+      status: false,
+      message: "No student found",
+      getSchool
+    })
+  }
+  res.status(200).json({
+    status: true,
+    message: "Student fetched successfully",
+    getSchool
+  })
+}
+
