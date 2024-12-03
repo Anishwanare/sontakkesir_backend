@@ -1,4 +1,5 @@
 import { School } from "../Model/SchoolModel.js";
+import { Student } from "../Model/StudentModel.js";
 
 // School registration function
 export const schoolRegistration = async (req, res, next) => {
@@ -87,37 +88,53 @@ export const getAllSchools = async (req, res, next) => {
 
 // Delete school function
 export const deleteSchool = async (req, res, next) => {
-  const { id } = req.params;
+  const { id } = req.params; // School ID to be deleted
 
   try {
     if (!id) {
       return res.status(404).json({
         status: false,
-        message: "School ID not found",
+        message: "School ID not provided",
       });
     }
 
-    const deleteSchool = await School.findById(id);
+    // Find the school by its ID
+    const schoolToDelete = await School.findById(id);
 
-    if (!deleteSchool) {
+    if (!schoolToDelete) {
       return res.status(404).json({
         status: false,
         message: "School not found",
       });
     }
 
+    // Check if any students are assigned to this school name
+    const studentsAssigned = await Student.find({ school: schoolToDelete.name }); // Use the school name for comparison
+
+    if (studentsAssigned.length > 0) {
+      return res.status(400).json({
+        status: false,
+        message: "School is assigned to students. Please delete all student records before deleting the school.",
+      });
+    }
+
+    // Proceed to delete the school
     await School.findByIdAndDelete(id);
+
     return res.status(200).json({
       status: true,
       message: "School deleted successfully",
     });
   } catch (error) {
+    // Handle validation errors
     if (error.name === "ValidationError") {
       const errorMessage = Object.values(error.errors)
-        .map((err) => err.message || "Internal Server Error")
+        .map((err) => err.message || "Validation Error")
         .join(" ");
       return res.status(400).json({ status: false, message: errorMessage });
     }
+
+    // Handle general errors
     return res.status(500).json({
       status: false,
       message: "Internal server error",
@@ -125,6 +142,7 @@ export const deleteSchool = async (req, res, next) => {
     });
   }
 };
+
 
 
 // Edit school function
@@ -197,8 +215,8 @@ export const editSchool = async (req, res, next) => {
 };
 
 
-export const getSchoolById = async(req,res,next)=>{
-  const {id} = req.params
+export const getSchoolById = async (req, res, next) => {
+  const { id } = req.params
   const getSchool = await School.findById(id)
   if (!getSchool) {
     return res.status(400).json({
