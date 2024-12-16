@@ -56,6 +56,15 @@ export const AdminLogin = async (req, res, next) => {
       });
     }
 
+    if(password){
+      if(password !== admin.password){
+        return res.status(401).json({
+          status:false,
+          message:"Unauthorized access to admin!!"
+        })
+      }
+    }
+
     const token = jwt.sign({ id: admin._id }, process.env.JWT_SECRET_KEY);
 
     return res.status(200).json({
