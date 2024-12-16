@@ -1,4 +1,7 @@
 import { Student } from "../Model/StudentModel.js";
+import jwt from "jsonwebtoken"
+import bcrypt from "bcrypt"
+import ErrorHandler from "../middleware.js/error.js";
 
 export const studentRegister = async (req, res, next) => {
   const {
@@ -44,12 +47,16 @@ export const studentRegister = async (req, res, next) => {
       });
     }
 
+    const salt = bcrypt.genSalt(10)
+    const hashPassword = bcrypt.hash(password, salt)
+
+
     //create a new student
     const newStudent = await Student.create({
       firstName,
       middleName,
       lastName,
-      password,
+      password: hashPassword,
       phone,
       coordinator,
       villageName,
@@ -59,10 +66,17 @@ export const studentRegister = async (req, res, next) => {
       role: "Student",
       school,
     });
-    return res.status(200).json({
+
+    // Generate JWT token
+    const token = jwt.sign({ id: newStudent._id }, process.env.JWT_SECRET_KEY, {
+      expiresIn: process.env.JWT_EXPIRES,
+    });
+
+    return res.status(200).cookies("Student_Token", token, { expires: new Date(Date.now() + process.env.COOKIE_EXPIRES * 24 * 60 * 60 * 1000), httpOnly: true }).json({
       status: true,
       message: "Student registered successfully",
       newStudent,
+      token
     });
   } catch (error) {
     return res.status(500).json({
@@ -72,6 +86,54 @@ export const studentRegister = async (req, res, next) => {
     });
   }
 };
+
+export const loginStudent = async (req, res, next) => {
+  const { email, phone, password } = req.body
+
+  if (!email || !phone || !password) {
+    return res.status(400).json({
+      message: "Please fill full form "
+    })
+  }
+
+  try {
+    const student = await Student.findOne({ email })
+
+    if (!student) {
+      return res.status(400).json({
+        message: "Invalid email or password",
+        success: false
+      })
+    }
+
+    const checkHashPassword = bcrypt.compare(password, student.password)
+    if (!checkHashPassword) {
+      return next(new ErrorHandler("Invalid Email or password!!", 401))
+    }
+
+    const token = jwt.sign({ id: student._id }, process.env.JWT_SECRET_KEY, {
+      expiresIn: process.env.JWT_EXPIRES
+    })
+
+    return res.status(200).cookies("Student_Token", token, { expires: new Date(Date.now() + process.env.COOKIE_EXPIRES * 24 * 60 * 60 * 1000), httpOnly: true }).json({
+      status: true,
+      message: "Student Login successfully",
+      student,
+      token
+    });
+
+  }
+  catch (error) {
+    return res.status(500).json({
+      message: "Internal sever error" || error,
+      success: false,
+      error: error.message
+    })
+
+  }
+}
+
+
 
 export const getStudents = async (req, res) => {
   const getStudent = await Student.find();
@@ -157,8 +219,8 @@ export const deleteStudent = async (req, res, next) => {
   })
 }
 
-export const getStudentById = async(req,res,next)=>{
-  const {id} = req.params
+export const getStudentById = async (req, res, next) => {
+  const { id } = req.params
   const getStudent = await Student.findById(id)
   if (!getStudent) {
     return res.status(400).json({

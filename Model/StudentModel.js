@@ -57,6 +57,7 @@ const studentSchema = new mongoose.Schema(
     role: {
       type: String,
       required: false,
+      default: "Student"
     },
   },
   { timestamps: true }

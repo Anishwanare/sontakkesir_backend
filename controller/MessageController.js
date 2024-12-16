@@ -1,6 +1,7 @@
+import { catchAsyncError } from "../middleware.js/catchAsyncError.js";
 import { Message } from "../Model/MessageModel.js";
 
-export const sendMessage = async (req, res, next) => {
+export const sendMessage = catchAsyncError(async (req, res, next) => {
   const { name, email, message } = req.body;
   try {
     const newMessage = await Message.create({ name, email, message });
@@ -26,7 +27,7 @@ export const sendMessage = async (req, res, next) => {
       error: error.message,
     });
   }
-};
+});
 
 export const getAllMessages = async (req, res, next) => {
   try {
