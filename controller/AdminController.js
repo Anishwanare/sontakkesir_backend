@@ -41,6 +41,7 @@ export const AdminRegister = async (req, res, next) => {
 
 export const AdminLogin = async (req, res, next) => {
   const { email, password } = req.body;
+
   try {
     if (!email || !password) {
       return res.status(400).json({
@@ -48,7 +49,9 @@ export const AdminLogin = async (req, res, next) => {
         message: "Please fill all fields",
       });
     }
-    const admin = await Admin.findOne({ email });
+
+    // Find admin by email
+    const admin = await Admin.findOne({ email }).select("+password");
     if (!admin) {
       return res.status(401).json({
         status: false,
@@ -56,24 +59,27 @@ export const AdminLogin = async (req, res, next) => {
       });
     }
 
-    if(password){
-      if(password !== admin.password){
-        return res.status(401).json({
-          status:false,
-          message:"Unauthorized access to admin!!"
-        })
-      }
+    // Check password
+    if (password !== admin.password) {
+      return res.status(401).json({
+        status: false,
+        message: "Unauthorized access to admin!",
+      });
     }
 
-    const token = jwt.sign({ id: admin._id }, process.env.JWT_SECRET_KEY);
+    // Generate JWT token
+    const token = jwt.sign({ id: admin._id }, process.env.JWT_SECRET_KEY, {
+      expiresIn: "1d", // Token valid for 1 day
+    });
 
     return res.status(200).json({
       status: true,
       message: "Logged in successfully",
-      admin,
+      admin: { id: admin._id, email: admin.email, name: admin.name }, // Send only non-sensitive details
       token,
     });
-  } catch {
+  } catch (error) {
+    console.error("Error during admin login:", error.message);
     return res.status(500).json({
       status: false,
       message: "Something went wrong, please try again!",
